@@ -94,6 +94,18 @@ function ConfigEnvironmentVariable {
         password=${passwordtmp}
     fi
 }
+#install freeradius-client 1.1.7
+function tar_freeradius_client_install(){
+    print_info "Installing freeradius-client-1.1.7"
+    wget -c ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz
+    tar -zxf freeradius-client-1.1.7.tar.gz
+    cd freeradius-client-1.1.7
+    ./configure --prefix=/usr --sysconfdir=/etc
+    make -j"$(nproc)" && make install
+    cd ..
+    rm -rf freeradius-client*
+    print_info "[ freeradius-client ] ok"
+}
 
 function PrintEnvironmentVariable {
     # 打印配置参数
@@ -191,6 +203,8 @@ _EOF_
     sed -i "s/#dns = 192.168.1.2/dns = ${dns1}\ndns = ${dns2}/g" "${confdir}/ocserv.conf"
     sed -i "s/cookie-timeout = 300/cookie-timeout = 86400/g" "${confdir}/ocserv.conf"
     sed -i 's/user-profile = profile.xml/#user-profile = profile.xml/g' "${confdir}/ocserv.conf"
+    
+  
 
     cat << _EOF_ >>${confdir}/ocserv.conf
 # Apple
